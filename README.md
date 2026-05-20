@@ -1,105 +1,65 @@
-# YC Policies — Multi-App Legal Pages
+# Policies
 
-This directory is structured to live as a **separate public repository**
-(e.g. `yogeshwaran-c/policies`) with GitHub Pages enabled. It hosts the
-privacy policy and any future legal documents for every app published
-under your name — one source of truth, one URL pattern, easy to add the
-next app.
+Privacy policies and legal documents for apps published by
+[**Yogeshwaran Chandrakasan**](https://github.com/yogeshwaran-c).
+Served as a static site via GitHub Pages.
+
+**Live site:** https://yogeshwaran-c.github.io/policies/
 
 ## URL pattern
 
-When GitHub Pages is enabled on `yogeshwaran-c/policies` (default
-branch `main`, source `/` root), the resulting URLs become:
+Every app gets a subdirectory and the same URL shape:
 
 ```
-https://yogeshwaran-c.github.io/policies/                  ← landing page (index of all apps)
-https://yogeshwaran-c.github.io/policies/dropzone/         ← per-app landing
-https://yogeshwaran-c.github.io/policies/dropzone/privacy  ← DROPZONE privacy
-https://yogeshwaran-c.github.io/policies/dropzone/terms    ← DROPZONE terms (future)
-https://yogeshwaran-c.github.io/policies/<next-app>/privacy
+https://yogeshwaran-c.github.io/policies/                  ← index of all apps
+https://yogeshwaran-c.github.io/policies/<app>/            ← per-app landing
+https://yogeshwaran-c.github.io/policies/<app>/privacy     ← privacy policy
+https://yogeshwaran-c.github.io/policies/<app>/terms       ← terms (optional)
 ```
 
-The DROPZONE privacy URL goes into the Play Console Privacy Policy
-field. When you ship a second app, copy `dropzone/` to a new subdir,
-edit the contents, and the new URL is immediately live.
+These URLs are stable — they're what the Play Console / App Store have
+on file, so once an app is published the path for that app should not
+change.
 
-## Directory layout
+## Apps published here
+
+| App | Privacy |
+|-----|---------|
+| DROPZONE | [`/dropzone/privacy`](https://yogeshwaran-c.github.io/policies/dropzone/privacy) |
+
+## Layout
 
 ```
-policies/
-├── README.md                ← this file (won't be served)
-├── index.html               ← root landing page listing all apps
+.
+├── .nojekyll            ← tells Pages to skip Jekyll so _shared/ is served
+├── index.html           ← landing page listing all apps
 ├── _shared/
-│   └── style.css            ← single shared stylesheet, light/dark aware
+│   └── style.css        ← single shared stylesheet for every policy page
 └── dropzone/
-    ├── index.html           ← DROPZONE legal landing (links to privacy)
-    └── privacy.html         ← DROPZONE privacy policy
+    ├── index.html       ← per-app legal landing
+    └── privacy.html     ← DROPZONE privacy policy
 ```
 
-Adding a second app later:
+`.nojekyll` is required: Pages defaults to Jekyll, which excludes any
+directory whose name starts with `_` (including `_shared/`). The empty
+sentinel file disables that and the shared stylesheet is published as-is.
 
-```
-policies/
-├── ...
-├── dropzone/
-└── newapp/
-    ├── index.html
-    └── privacy.html
-```
+## Adding a new app
 
-## Spinning it up as a separate public repo
+1. Copy `dropzone/` to `<newapp>/`.
+2. Edit `<newapp>/index.html` and `<newapp>/privacy.html` — adjust the
+   app name, the "what stays on your device" bullets, the support email.
+3. Add a row to the **Apps published here** table above.
+4. Add a card link to the root `index.html`.
+5. `git push`. Pages rebuilds in ~30 s and the new URL is live.
 
-1. Create a new empty public repository on GitHub: `yogeshwaran-c/policies`.
+## Editing an existing policy
 
-2. Copy the **contents** of this `policies/` directory (not the directory
-   itself) into the root of the new repo:
+Every change is a normal commit; push triggers an auto-redeploy. The URL
+stays identical, so nothing in any Play Console listing needs updating.
 
-   ```powershell
-   cd C:\path\to\local\workspace
-   git clone git@github.com:yogeshwaran-c/policies.git
-   cd policies
-   # Copy everything inside the tetris repo's policies/ directory into here
-   Copy-Item -Path "C:\Users\YogeshwaranChandraka\Projects\yc\tetris\policies\*" -Destination . -Recurse
-   git add .
-   git commit -m "feat: initial DROPZONE privacy policy"
-   git push
-   ```
+## License
 
-3. Enable GitHub Pages: repo Settings → Pages → Source = "Deploy from
-   branch", Branch = `main`, Folder = `/ (root)`. Save. Wait ~30s.
-
-4. Verify the URL resolves:
-   `https://yogeshwaran-c.github.io/policies/dropzone/privacy`
-
-5. Paste that URL into:
-   - Play Console → App content → Privacy policy → URL
-   - The "Privacy" link in any in-app About screen if you want to deep-link
-
-6. Delete the `policies/` directory from this tetris repo (or keep it as
-   an editable mirror — either works, but having one source of truth in
-   the dedicated repo is cleaner). Recommended:
-
-   ```powershell
-   git rm -r policies/
-   git commit -m "chore: move policies to yogeshwaran-c/policies"
-   ```
-
-## Editing later
-
-Every change is a normal commit in the policies repo. Push, GitHub Pages
-rebuilds automatically within seconds. The URLs don't change.
-
-If you want a richer authoring experience (markdown source, templates,
-preview server), wrap this in Astro / 11ty later — the URL pattern can
-stay identical so nothing breaks.
-
-## Why a separate repo
-
-- **Clean separation of concerns.** The app code repo doesn't need to
-  carry legal HTML.
-- **Reusable across apps.** One URL prefix, one stylesheet, one
-  domain to remember.
-- **Public by default.** App code repos may be private; legal pages
-  must be publicly fetchable.
-- **No build pipeline needed.** GitHub Pages serves static HTML
-  directly; no Node, no React, no JAMstack overhead.
+The site structure (HTML, CSS) is MIT-licensed — see [`LICENSE`](LICENSE).
+The policy *content* under each `<app>/` directory describes that specific
+app and should not be copied verbatim; treat it as a template.
