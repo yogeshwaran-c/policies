@@ -3,32 +3,589 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DROPZONE — Policies</title>
-    <link rel="stylesheet" href="../_shared/style.css" />
+    <title>DROPZONE — A polished retro modern tetromino puzzler</title>
+    <meta
+      name="description"
+      content="DROPZONE is a single-player tetromino puzzler for Android. Four modes, modern guideline scoring, neon-on-dark retro aesthetic. No ads, no tracking, fully offline."
+    />
+    <meta property="og:title" content="DROPZONE" />
+    <meta
+      property="og:description"
+      content="A polished retro modern tetromino puzzler. No ads, no tracking, fully offline."
+    />
+    <meta property="og:image" content="feature-graphic.png" />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@700&display=swap');
+
+      :root {
+        --bg-0: #030309;
+        --bg-1: #050510;
+        --bg-2: #0a0a1a;
+        --bg-3: #12121f;
+        --bg-4: #1a1a2e;
+        --text: #f0f0f5;
+        --muted: #a0a0b8;
+        --dim: #7a7a8e;
+        --separator: rgba(255, 255, 255, 0.06);
+        --cyan: #00f0ff;
+        --magenta: #ff2d78;
+        --amber: #ffb800;
+        --green: #39ff14;
+        --orange: #ff8c00;
+        --blue: #4d6aff;
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg-1);
+        color: var(--text);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      body {
+        background:
+          radial-gradient(ellipse at 50% -10%, rgba(0, 240, 255, 0.14), transparent 50%),
+          radial-gradient(ellipse at 50% 110%, rgba(255, 45, 120, 0.10), transparent 50%),
+          var(--bg-1);
+        background-attachment: fixed;
+      }
+
+      /* faint CRT scanline overlay — mirrors the in-game effect */
+      body::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0 2px,
+          rgba(255, 255, 255, 0.015) 2px 3px
+        );
+        z-index: 1000;
+      }
+
+      a { color: var(--cyan); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .mono {
+        font-family: 'JetBrains Mono', 'Courier New', monospace;
+      }
+
+      /* Top nav */
+      nav.top {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 32px;
+        background: rgba(5, 5, 16, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--separator);
+      }
+      nav.top .brand {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 18px;
+        letter-spacing: 4px;
+        color: var(--cyan);
+        text-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+      }
+      nav.top .links {
+        display: flex;
+        gap: 32px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      nav.top .links a { color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 500; }
+      nav.top .links a:hover { color: var(--cyan); text-decoration: none; }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 32px;
+      }
+
+      /* Hero */
+      section.hero {
+        padding: 80px 0 96px;
+        text-align: center;
+      }
+      .hero .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 18px;
+        border: 1px solid rgba(0, 240, 255, 0.4);
+        border-radius: 999px;
+        background: rgba(0, 240, 255, 0.06);
+        color: var(--cyan);
+        font-size: 12px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 32px;
+      }
+      .hero .pill .dot {
+        width: 8px; height: 8px;
+        background: var(--cyan);
+        border-radius: 50%;
+        box-shadow: 0 0 12px var(--cyan);
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+      @keyframes pulse { 50% { opacity: 0.4; } }
+
+      .hero h1 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: clamp(56px, 11vw, 120px);
+        letter-spacing: clamp(6px, 1.5vw, 14px);
+        margin: 0 0 24px;
+        color: var(--cyan);
+        text-shadow:
+          0 0 24px rgba(0, 240, 255, 0.55),
+          0 0 80px rgba(0, 240, 255, 0.25);
+        line-height: 0.95;
+      }
+      .hero p.tagline {
+        font-size: clamp(16px, 1.7vw, 19px);
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0 0 32px;
+        font-weight: 500;
+      }
+      .hero p.lead {
+        max-width: 620px;
+        margin: 0 auto 40px;
+        font-size: 18px;
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .hero .featured {
+        margin-top: 32px;
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid var(--separator);
+        box-shadow:
+          0 24px 48px -16px rgba(0, 0, 0, 0.6),
+          0 0 80px -20px rgba(0, 240, 255, 0.25);
+      }
+      .hero .featured img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      /* Section heading helper */
+      .section-head {
+        text-align: center;
+        margin-bottom: 56px;
+      }
+      .section-head .eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        letter-spacing: 4px;
+        color: var(--cyan);
+        text-transform: uppercase;
+        margin-bottom: 14px;
+      }
+      .section-head h2 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: clamp(28px, 4vw, 42px);
+        letter-spacing: clamp(2px, 0.4vw, 5px);
+        margin: 0 0 12px;
+        color: var(--text);
+      }
+      .section-head p {
+        color: var(--muted);
+        font-size: 16px;
+        max-width: 560px;
+        margin: 0 auto;
+      }
+
+      /* Modes */
+      section.modes { padding: 96px 0; }
+      .mode-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+      .mode-card {
+        position: relative;
+        padding: 32px 28px;
+        background: var(--bg-4);
+        border: 1px solid var(--separator);
+        border-radius: 16px;
+        transition: border-color 200ms ease, transform 200ms ease;
+      }
+      .mode-card:hover {
+        transform: translateY(-2px);
+      }
+      .mode-card .label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 22px;
+        letter-spacing: 4px;
+        margin-bottom: 16px;
+      }
+      .mode-card .desc {
+        font-size: 14.5px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+      .mode-card .glyph {
+        position: absolute;
+        top: 24px;
+        right: 28px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 24px;
+        opacity: 0.55;
+      }
+      .mode-card.marathon { border-color: rgba(0, 240, 255, 0.4); }
+      .mode-card.marathon:hover { border-color: var(--cyan); box-shadow: 0 0 32px -8px rgba(0,240,255,0.4); }
+      .mode-card.marathon .label, .mode-card.marathon .glyph { color: var(--cyan); }
+
+      .mode-card.sprint { border-color: rgba(255, 45, 120, 0.4); }
+      .mode-card.sprint:hover { border-color: var(--magenta); box-shadow: 0 0 32px -8px rgba(255,45,120,0.4); }
+      .mode-card.sprint .label, .mode-card.sprint .glyph { color: var(--magenta); }
+
+      .mode-card.ultra { border-color: rgba(255, 184, 0, 0.4); }
+      .mode-card.ultra:hover { border-color: var(--amber); box-shadow: 0 0 32px -8px rgba(255,184,0,0.4); }
+      .mode-card.ultra .label, .mode-card.ultra .glyph { color: var(--amber); }
+
+      .mode-card.zen { border-color: rgba(57, 255, 20, 0.4); }
+      .mode-card.zen:hover { border-color: var(--green); box-shadow: 0 0 32px -8px rgba(57,255,20,0.4); }
+      .mode-card.zen .label, .mode-card.zen .glyph { color: var(--green); }
+
+      /* Features */
+      section.features { padding: 96px 0; border-top: 1px solid var(--separator); }
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px;
+      }
+      .feature {
+        padding: 28px 24px;
+        background: var(--bg-3);
+        border: 1px solid var(--separator);
+        border-radius: 14px;
+      }
+      .feature .tag {
+        display: inline-block;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+        color: var(--green);
+        background: rgba(57, 255, 20, 0.10);
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-bottom: 16px;
+      }
+      .feature.warn .tag { color: var(--amber); background: rgba(255, 184, 0, 0.10); }
+      .feature .title {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 16px;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+        color: var(--text);
+      }
+      .feature .body {
+        font-size: 14.5px;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      /* Screenshots */
+      section.shots { padding: 96px 0; border-top: 1px solid var(--separator); }
+      .shot-track {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 8px 0 24px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--bg-4) transparent;
+      }
+      .shot-track::-webkit-scrollbar { height: 6px; }
+      .shot-track::-webkit-scrollbar-track { background: transparent; }
+      .shot-track::-webkit-scrollbar-thumb { background: var(--bg-4); border-radius: 999px; }
+      .shot {
+        flex: 0 0 240px;
+        scroll-snap-align: center;
+        border-radius: 22px;
+        overflow: hidden;
+        border: 1px solid var(--separator);
+        box-shadow: 0 16px 32px -16px rgba(0, 0, 0, 0.6);
+        transition: transform 200ms ease, border-color 200ms ease;
+      }
+      .shot:hover { transform: translateY(-4px); border-color: rgba(0, 240, 255, 0.3); }
+      .shot img { display: block; width: 100%; height: auto; }
+      .shot-hint {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 12px;
+        letter-spacing: 1px;
+        color: var(--dim);
+      }
+
+      /* Privacy callout */
+      section.privacy-cta { padding: 96px 0; border-top: 1px solid var(--separator); text-align: center; }
+      section.privacy-cta h2 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: clamp(24px, 3vw, 32px);
+        letter-spacing: 4px;
+        margin: 0 0 18px;
+      }
+      section.privacy-cta p {
+        max-width: 600px;
+        margin: 0 auto 32px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+      section.privacy-cta a.btn {
+        display: inline-block;
+        padding: 14px 28px;
+        background: transparent;
+        border: 1px solid var(--cyan);
+        color: var(--cyan);
+        border-radius: 999px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        transition: background 200ms ease;
+      }
+      section.privacy-cta a.btn:hover {
+        background: rgba(0, 240, 255, 0.1);
+        text-decoration: none;
+      }
+
+      /* Maker */
+      section.maker {
+        padding: 64px 0 96px;
+        border-top: 1px solid var(--separator);
+      }
+      .maker-card {
+        max-width: 640px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 40px 32px;
+        background: var(--bg-3);
+        border: 1px solid var(--separator);
+        border-radius: 18px;
+      }
+      .maker-card .eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        letter-spacing: 3px;
+        color: var(--cyan);
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .maker-card h3 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 22px;
+        letter-spacing: 2.5px;
+        margin: 0 0 14px;
+      }
+      .maker-card p { color: var(--muted); margin: 0 0 24px; font-size: 15px; }
+      .maker-card a.link {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        letter-spacing: 2px;
+        color: var(--cyan);
+        text-transform: uppercase;
+      }
+      .maker-card a.link::after {
+        content: ' →';
+        opacity: 0.7;
+      }
+
+      /* Footer */
+      footer.site {
+        padding: 32px 32px 48px;
+        border-top: 1px solid var(--separator);
+        text-align: center;
+        font-size: 13px;
+        color: var(--dim);
+      }
+      footer.site .row { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; flex-wrap: wrap; }
+      footer.site a { color: var(--muted); }
+      footer.site .legal { font-size: 11.5px; letter-spacing: 0.3px; line-height: 1.6; max-width: 640px; margin: 0 auto; }
+
+      @media (max-width: 640px) {
+        main, nav.top { padding-left: 20px; padding-right: 20px; }
+        nav.top .links { gap: 18px; font-size: 12px; }
+        section.hero { padding: 56px 0 64px; }
+        section.modes, section.features, section.shots, section.privacy-cta, section.maker { padding: 64px 0; }
+      }
+    </style>
   </head>
   <body>
+    <nav class="top">
+      <span class="brand">DROPZONE</span>
+      <div class="links">
+        <a href="#modes">Modes</a>
+        <a href="#features">Features</a>
+        <a href="privacy">Privacy</a>
+      </div>
+    </nav>
+
     <main>
-      <header>
-        <div class="crumbs">
-          <a href="../">All apps</a> · DROPZONE
+      <!-- HERO -->
+      <section class="hero">
+        <div class="pill">
+          <span class="dot"></span>
+          Coming soon to Google Play
         </div>
         <h1>DROPZONE</h1>
-        <p class="subtitle">Policies</p>
-      </header>
+        <p class="tagline">Retro · Modern · Offline</p>
+        <p class="lead">
+          A polished single-player tetromino puzzler for Android. Four modes,
+          modern guideline scoring with T-spins and perfect clears, neon-on-dark
+          retro aesthetic. No ads, no tracking, no accounts &mdash; just the game.
+        </p>
+        <div class="featured">
+          <img src="feature-graphic.png" alt="DROPZONE feature graphic showing the game title and a neon tetromino stack." />
+        </div>
+      </section>
 
-      <div class="apps-grid">
-        <a href="privacy" class="app-card">
-          <span class="name">Privacy Policy</span>
-          <span class="meta">What we collect and what stays on your device.</span>
-        </a>
-      </div>
+      <!-- MODES -->
+      <section class="modes" id="modes">
+        <div class="section-head">
+          <div class="eyebrow">FOUR MODES</div>
+          <h2>Pick Your Tempo</h2>
+          <p>Each mode has its own pace and its own personal best to chase.</p>
+        </div>
+        <div class="mode-grid">
+          <div class="mode-card marathon">
+            <div class="glyph">&#8734;</div>
+            <div class="label">MARATHON</div>
+            <div class="desc">Clear 200 lines with progressive speed. The long-form mode &mdash; settle in.</div>
+          </div>
+          <div class="mode-card sprint">
+            <div class="glyph">&#9889;</div>
+            <div class="label">SPRINT</div>
+            <div class="desc">Clear 40 lines as fast as you can. Race your best time, lockdown your PB.</div>
+          </div>
+          <div class="mode-card ultra">
+            <div class="glyph">&#9719;</div>
+            <div class="label">ULTRA</div>
+            <div class="desc">Two minutes. One mission: maximum score. Risk it all on every drop.</div>
+          </div>
+          <div class="mode-card zen">
+            <div class="glyph">&#9680;</div>
+            <div class="label">ZEN</div>
+            <div class="desc">Endless. No game over. No timer. Just play, until you want to stop.</div>
+          </div>
+        </div>
+      </section>
 
-      <footer>
-        Questions:
-        <a href="mailto:yogeshwaran.chandrakasan@gmail.com">
-          yogeshwaran.chandrakasan@gmail.com
-        </a>
-      </footer>
+      <!-- FEATURES -->
+      <section class="features" id="features">
+        <div class="section-head">
+          <div class="eyebrow">WHY DROPZONE</div>
+          <h2>Built for Players</h2>
+          <p>The features people care about, and the ones they shouldn't have to worry about.</p>
+        </div>
+        <div class="feature-grid">
+          <div class="feature">
+            <span class="tag">CRAFT</span>
+            <div class="title">Guideline scoring</div>
+            <div class="body">Hand-tuned SRS with T-spin detection, back-to-back bonuses, combos and perfect clears.</div>
+          </div>
+          <div class="feature">
+            <span class="tag">CRAFT</span>
+            <div class="title">60 FPS Skia rendering</div>
+            <div class="body">Native Skia + Reanimated power every frame. Animations stay smooth on mid-range Android devices.</div>
+          </div>
+          <div class="feature">
+            <span class="tag">CRAFT</span>
+            <div class="title">Tunable controls</div>
+            <div class="body">DAS, ARR and soft-drop factor are all adjustable. Competitive players, this is for you.</div>
+          </div>
+          <div class="feature warn">
+            <span class="tag">PRIVACY</span>
+            <div class="title">No tracking, ever</div>
+            <div class="body">Zero analytics, zero ads, zero third-party SDKs. Stats stay on your device.</div>
+          </div>
+          <div class="feature warn">
+            <span class="tag">PRIVACY</span>
+            <div class="title">Plays fully offline</div>
+            <div class="body">After install you never need a network connection. No accounts, no sign-in, no cloud.</div>
+          </div>
+          <div class="feature">
+            <span class="tag">ACCESS</span>
+            <div class="title">WCAG 2.2 AA</div>
+            <div class="body">Reduced motion, dynamic type, screen-reader announcements, lefty-mirror controls, photosensitive-friendly modes.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREENSHOTS -->
+      <section class="shots">
+        <div class="section-head">
+          <div class="eyebrow">IN-GAME</div>
+          <h2>See It In Motion</h2>
+          <p>Five screens from the live build. Swipe to scroll.</p>
+        </div>
+        <div class="shot-track">
+          <div class="shot"><img src="screenshots/01-gameplay.png" alt="Gameplay HUD with score, hold and next-piece queue." /></div>
+          <div class="shot"><img src="screenshots/02-tetris-clear.png" alt="Tetris 4-line clear with neon glow celebration." /></div>
+          <div class="shot"><img src="screenshots/03-game-over.png" alt="Game-over screen with final score and new-best chip." /></div>
+          <div class="shot"><img src="screenshots/04-modes.png" alt="Four-mode picker showing Marathon, Sprint, Ultra and Zen." /></div>
+          <div class="shot"><img src="screenshots/05-stats.png" alt="Personal stats with last-7-days play activity chart." /></div>
+        </div>
+        <div class="shot-hint">↔ swipe</div>
+      </section>
+
+      <!-- PRIVACY CTA -->
+      <section class="privacy-cta">
+        <h2>Your Data Stays Yours</h2>
+        <p>
+          Nothing leaves your device. No analytics SDKs, no advertising IDs,
+          no servers we operate. The full policy is short, plain-spoken,
+          and worth reading.
+        </p>
+        <a class="btn" href="privacy">Read the Privacy Policy</a>
+      </section>
+
+      <!-- MAKER -->
+      <section class="maker">
+        <div class="maker-card">
+          <div class="eyebrow">MADE BY</div>
+          <h3>Yogeshwaran Chandrakasan</h3>
+          <p>
+            A Chennai-based full-stack developer who builds AI and
+            workflow-automation platforms by day. DROPZONE is a side project
+            &mdash; small, polished, and built purely for the love of it.
+          </p>
+          <a class="link" href="https://yogeshwaran.com" target="_blank" rel="noopener">Visit yogeshwaran.com</a>
+        </div>
+      </section>
     </main>
+
+    <footer class="site">
+      <div class="row">
+        <a href="privacy">Privacy Policy</a>
+        <a href="../">All apps</a>
+        <a href="mailto:yogeshwaran.chandrakasan@gmail.com">Contact</a>
+      </div>
+      <p class="legal">
+        Tetris is a trademark of Tetris Holding, LLC. DROPZONE is an
+        independent puzzle game inspired by the genre and is not affiliated
+        with Tetris Holding.
+      </p>
+    </footer>
   </body>
 </html>
