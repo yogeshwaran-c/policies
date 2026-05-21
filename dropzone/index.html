@@ -270,8 +270,18 @@
       section.features { padding: 96px 0; border-top: 1px solid var(--separator); }
       .feature-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 24px;
+      }
+      @media (max-width: 900px) {
+        .feature-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 600px) {
+        .feature-grid {
+          grid-template-columns: 1fr;
+        }
       }
       .feature {
         padding: 28px 24px;
@@ -528,6 +538,21 @@
             <span class="tag">ACCESS</span>
             <div class="title">WCAG 2.2 AA</div>
             <div class="body">Reduced motion, dynamic type, screen-reader announcements, lefty-mirror controls, photosensitive-friendly modes.</div>
+          </div>
+          <div class="feature">
+            <span class="tag">CRAFT</span>
+            <div class="title">Audio + haptic pair</div>
+            <div class="body">Every input &mdash; move, rotate, lock, line clear &mdash; gets a paired audio cue and a haptic tap. Listen and feel the game.</div>
+          </div>
+          <div class="feature">
+            <span class="tag">ACCESS</span>
+            <div class="title">Dark and light themes</div>
+            <div class="body">Both themes are calibrated for WCAG AA contrast. Follows your system setting automatically, or pin one from Settings.</div>
+          </div>
+          <div class="feature">
+            <span class="tag">CRAFT</span>
+            <div class="title">One-handed portrait</div>
+            <div class="body">Locked portrait orientation, controls sized for thumbs, hold and rotate within easy reach. Designed for the commute.</div>
           </div>
         </div>
       </section>
